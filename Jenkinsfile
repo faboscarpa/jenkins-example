@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage ('Compile Stage') {
+        stage ('Compile') {
 
             steps {
                 withMaven(maven : 'maven_3_5_0') {
@@ -11,21 +11,19 @@ pipeline {
             }
         }
 
-        stage ('Testing Stage') {
+        stage ('Testing') {
 
             steps {
                 withMaven(maven : 'maven_3_5_0') {
-                    echo env.BRANCH_NAME
                     sh 'mvn test'
                 }
             }
         }
 
-
-        stage ('Deployment Stage') {
+        stage ('Deployment Only Master') {
             steps {
                 when {
-                expression {env.BRANCH_NAME == 'stagin'}
+                    branch 'master'
                 }
                 withMaven(maven : 'maven_3_5_0') {
                     sh 'mvn deploy'
